@@ -1,8 +1,33 @@
+# Grenze
+
 border-x: 0
+
+# Sichtbare Grenze
+
+border:
+  enabled: true
+
+# Grenzsteine
+
+markers:
+  enabled: true
+  spacing: 500
+
+# Partikel
 
 particles:
   enabled: true
   distance: 10
 
+# Actionbar
+
 actionbar:
   enabled: true
+
+# Generierungsbereich
+# Für Tests klein halten!
+# Nicht direkt -30000000 bis 30000000 verwenden.
+
+generation:
+  min-z: -5000
+  max-z: 5000
