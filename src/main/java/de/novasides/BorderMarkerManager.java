@@ -2,7 +2,6 @@ package de.novasides;
 
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 
 public class BorderMarkerManager {
@@ -16,8 +15,9 @@ public class BorderMarkerManager {
     public void generate(World world, int minZ, int maxZ) {
 
         int x = config.getBorderX();
+        int spacing = config.getMarkerSpacing();
 
-        for (int z = minZ; z <= maxZ; z += 500) {
+        for (int z = minZ; z <= maxZ; z += spacing) {
 
             int y = world.getHighestBlockYAt(x, z);
 
@@ -31,10 +31,12 @@ public class BorderMarkerManager {
             world.getBlockAt(x, y + 3, z).setType(Material.OAK_SIGN);
 
             if (world.getBlockAt(x, y + 3, z).getState() instanceof Sign sign) {
+
                 sign.setLine(0, "NovaSides");
-                sign.setLine(1, "🏡 PEACE");
+                sign.setLine(1, "PEACE");
                 sign.setLine(2, "|");
-                sign.setLine(3, "⚔ PVP");
+                sign.setLine(3, "PVP");
+
                 sign.update();
             }
         }
