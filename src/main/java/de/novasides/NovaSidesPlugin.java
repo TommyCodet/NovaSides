@@ -17,6 +17,11 @@ public final class NovaSidesPlugin extends JavaPlugin {
         instance = this;
 
         saveDefaultConfig();
+
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdirs();
+        }
+
         saveResource("messages.yml", false);
 
         configManager = new ConfigManager(this);
@@ -26,6 +31,7 @@ public final class NovaSidesPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(
                 new PlayerMoveListener(
                         sideManager,
+                        configManager,
                         messageManager,
                         new ActionBarManager(messageManager),
                         new ParticleManager(configManager),
@@ -38,9 +44,7 @@ public final class NovaSidesPlugin extends JavaPlugin {
 
         if (configManager.borderEnabled()) {
 
-            BorderRenderer renderer = new BorderRenderer(configManager);
-
-            renderer.generate(
+            new BorderRenderer(configManager).generate(
                     world,
                     configManager.getMinZ(),
                     configManager.getMaxZ()
@@ -49,10 +53,7 @@ public final class NovaSidesPlugin extends JavaPlugin {
 
         if (configManager.markersEnabled()) {
 
-            BorderMarkerManager markerManager =
-                    new BorderMarkerManager(configManager);
-
-            markerManager.generate(
+            new BorderMarkerManager(configManager).generate(
                     world,
                     configManager.getMinZ(),
                     configManager.getMaxZ()
@@ -61,13 +62,12 @@ public final class NovaSidesPlugin extends JavaPlugin {
 
         getLogger().info("================================");
         getLogger().info("NovaSides aktiviert");
-        getLogger().info("Grenze X = " + configManager.getBorderX());
+        getLogger().info("Border X: " + configManager.getBorderX());
         getLogger().info("================================");
     }
 
     @Override
     public void onDisable() {
-
         getLogger().info("NovaSides deaktiviert");
     }
 
