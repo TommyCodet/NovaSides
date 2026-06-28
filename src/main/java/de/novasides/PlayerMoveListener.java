@@ -13,6 +13,7 @@ import java.util.UUID;
 public class PlayerMoveListener implements Listener {
 
     private final SideManager sideManager;
+    private final ConfigManager config;
     private final MessageManager messages;
     private final ActionBarManager actionBar;
     private final ParticleManager particles;
@@ -22,12 +23,14 @@ public class PlayerMoveListener implements Listener {
 
     public PlayerMoveListener(
             SideManager sideManager,
+            ConfigManager config,
             MessageManager messages,
             ActionBarManager actionBar,
             ParticleManager particles,
             TitleManager titles
     ) {
         this.sideManager = sideManager;
+        this.config = config;
         this.messages = messages;
         this.actionBar = actionBar;
         this.particles = particles;
@@ -41,14 +44,26 @@ public class PlayerMoveListener implements Listener {
             return;
         }
 
+        Location from = event.getFrom();
         Location to = event.getTo();
+
+        if (from.getBlockX() == to.getBlockX()
+                && from.getBlockY() == to.getBlockY()
+                && from.getBlockZ() == to.getBlockZ()) {
+            return;
+        }
+
         Player player = event.getPlayer();
 
         SideType current = sideManager.getSide(to);
         SideType previous = lastSide.get(player.getUniqueId());
 
         if (sideManager.isNearBorder(to)) {
-            actionBar.send(player, current);
+
+            if (config.actionBarEnabled()) {
+                actionBar.send(player, current);
+            }
+
             particles.show(player, to);
         }
 
