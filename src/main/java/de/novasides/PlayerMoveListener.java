@@ -1,0 +1,68 @@
+package de.novasides;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public class PlayerMoveListener implements Listener {
+
+    private final SideManager sideManager;
+    private final MessageManager messages;
+    private final ActionBarManager actionBar;
+    private final ParticleManager particles;
+    private final TitleManager titles;
+
+    private final Map<UUID, SideType> lastSide = new HashMap<>();
+
+    public PlayerMoveListener(
+            SideManager sideManager,
+            MessageManager messages,
+            ActionBarManager actionBar,
+            ParticleManager particles,
+            TitleManager titles
+    ) {
+        this.sideManager = sideManager;
+        this.messages = messages;
+        this.actionBar = actionBar;
+        this.particles = particles;
+        this.titles = titles;
+    }
+
+    @EventHandler
+    public void onMove(PlayerMoveEvent event) {
+
+        if (event.getTo() == null) {
+            return;
+        }
+
+        Location to = event.getTo();
+        Player player = event.getPlayer();
+
+        SideType current = sideManager.getSide(to);
+        SideType previous = lastSide.get(player.getUniqueId());
+
+        if (sideManager.isNearBorder(to)) {
+            actionBar.send(player, current);
+            particles.show(player, to);
+        }
+
+        if (previous != null && previous != current) {
+
+            if (current == SideType.PEACE) {
+                player.sendMessage(messages.get("peace-enter"));
+            } else {
+                player.sendMessage(messages.get("pvp-enter"));
+            }
+
+            titles.send(player, current);
+        }
+
+        lastSide.put(player.getUniqueId(), current);
+    }
+}
