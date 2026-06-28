@@ -1,7 +1,5 @@
 package de.novasides;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
 public class ConfigManager {
 
     private final NovaSidesPlugin plugin;
@@ -14,6 +12,18 @@ public class ConfigManager {
         return plugin.getConfig().getInt("border-x", 0);
     }
 
+    public boolean borderEnabled() {
+        return plugin.getConfig().getBoolean("border.enabled", true);
+    }
+
+    public boolean markersEnabled() {
+        return plugin.getConfig().getBoolean("markers.enabled", true);
+    }
+
+    public int getMarkerSpacing() {
+        return plugin.getConfig().getInt("markers.spacing", 500);
+    }
+
     public boolean particlesEnabled() {
         return plugin.getConfig().getBoolean("particles.enabled", true);
     }
@@ -24,5 +34,13 @@ public class ConfigManager {
 
     public boolean actionBarEnabled() {
         return plugin.getConfig().getBoolean("actionbar.enabled", true);
+    }
+
+    public int getMinZ() {
+        return plugin.getConfig().getInt("generation.min-z", -5000);
+    }
+
+    public int getMaxZ() {
+        return plugin.getConfig().getInt("generation.max-z", 5000);
     }
 }
