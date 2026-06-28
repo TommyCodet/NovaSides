@@ -1,0 +1,8 @@
+border-x: 0
+
+particles:
+  enabled: true
+  distance: 10
+
+actionbar:
+  enabled: true
