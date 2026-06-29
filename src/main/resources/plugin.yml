@@ -1,4 +1,9 @@
 name: NovaSides
-main: de.novasides.NovaSidesPlugin
 version: 1.0.0
+main: de.novasides.NovaSidesPlugin
 api-version: '1.21'
+
+commands:
+  spawn:
+    description: Teleportiert zum Spawn
+    usage: /spawn
