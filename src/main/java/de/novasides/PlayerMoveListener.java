@@ -18,6 +18,7 @@ public class PlayerMoveListener implements Listener {
     private final ActionBarManager actionBar;
     private final ParticleManager particles;
     private final TitleManager titles;
+    private final CombatManager combatManager;
 
     private final Map<UUID, SideType> lastSide = new HashMap<>();
 
@@ -27,7 +28,8 @@ public class PlayerMoveListener implements Listener {
             MessageManager messages,
             ActionBarManager actionBar,
             ParticleManager particles,
-            TitleManager titles
+            TitleManager titles,
+            CombatManager combatManager
     ) {
         this.sideManager = sideManager;
         this.config = config;
@@ -35,6 +37,7 @@ public class PlayerMoveListener implements Listener {
         this.actionBar = actionBar;
         this.particles = particles;
         this.titles = titles;
+        this.combatManager = combatManager;
     }
 
     @EventHandler
@@ -56,6 +59,20 @@ public class PlayerMoveListener implements Listener {
         Player player = event.getPlayer();
 
         SideType current = sideManager.getSide(to);
+
+        // Combat-Spieler dürfen nicht in die Friedensseite
+        if (current == SideType.PEACE
+                && combatManager.isInCombat(player)) {
+
+            event.setTo(from);
+
+            player.sendMessage(
+                    "§c⚔ Du bist noch im Kampf. Warte 15 Sekunden."
+            );
+
+            return;
+        }
+
         SideType previous = lastSide.get(player.getUniqueId());
 
         if (sideManager.isNearBorder(to)) {
