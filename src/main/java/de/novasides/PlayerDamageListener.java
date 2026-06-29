@@ -1,6 +1,8 @@
 package de.novasides;
 
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -8,9 +10,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public class PlayerDamageListener implements Listener {
 
     private final SideManager sideManager;
+    private final CombatManager combatManager;
 
-    public PlayerDamageListener(SideManager sideManager) {
+    public PlayerDamageListener(
+            SideManager sideManager,
+            CombatManager combatManager
+    ) {
         this.sideManager = sideManager;
+        this.combatManager = combatManager;
     }
 
     @EventHandler
@@ -20,17 +27,38 @@ public class PlayerDamageListener implements Listener {
             return;
         }
 
-        if (!(event.getDamager() instanceof Player attacker)) {
+        Player attacker = null;
+
+        if (event.getDamager() instanceof Player player) {
+            attacker = player;
+        }
+
+        if (event.getDamager() instanceof Projectile projectile
+                && projectile.getShooter() instanceof Player player) {
+            attacker = player;
+        }
+
+        if (event.getDamager() instanceof Tameable tameable
+                && tameable.getOwner() instanceof Player player) {
+            attacker = player;
+        }
+
+        if (attacker == null) {
             return;
         }
 
-        SideType victimSide = sideManager.getSide(victim.getLocation());
-
-        if (victimSide == SideType.PEACE) {
+        if (sideManager.getSide(victim.getLocation()) == SideType.PEACE) {
 
             event.setCancelled(true);
 
-            attacker.sendMessage("§cPvP ist auf der Friedensseite deaktiviert.");
+            attacker.sendMessage(
+                    "§cPvP ist auf der Friedensseite deaktiviert."
+            );
+
+            return;
         }
+
+        combatManager.tag(attacker);
+        combatManager.tag(victim);
     }
 }
