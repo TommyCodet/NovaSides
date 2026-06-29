@@ -30,7 +30,7 @@ public final class NovaSidesPlugin extends JavaPlugin {
         sideManager = new SideManager(configManager);
         combatManager = new CombatManager();
 
-        // Grenz-/Bewegungssystem
+        // Grenze / Bewegung
         getServer().getPluginManager().registerEvents(
                 new PlayerMoveListener(
                         sideManager,
@@ -44,7 +44,7 @@ public final class NovaSidesPlugin extends JavaPlugin {
                 this
         );
 
-        // PvP + Projektile + CombatTag
+        // PvP + Projektile
         getServer().getPluginManager().registerEvents(
                 new PlayerDamageListener(
                         sideManager,
@@ -64,6 +64,28 @@ public final class NovaSidesPlugin extends JavaPlugin {
                 new ExplosionListener(sideManager),
                 this
         );
+
+        // Combat Teleport Block
+        getServer().getPluginManager().registerEvents(
+                new CombatTeleportListener(combatManager),
+                this
+        );
+
+        // Combat Logout
+        getServer().getPluginManager().registerEvents(
+                new CombatLogoutListener(combatManager),
+                this
+        );
+
+        // /spawn
+        if (getCommand("spawn") != null) {
+            getCommand("spawn").setExecutor(
+                    new SpawnCommand(
+                            configManager,
+                            combatManager
+                    )
+            );
+        }
 
         World world = getServer().getWorlds().get(0);
 
@@ -89,6 +111,7 @@ public final class NovaSidesPlugin extends JavaPlugin {
         getLogger().info("NovaSides aktiviert");
         getLogger().info("Border X: " + configManager.getBorderX());
         getLogger().info("Combat Tag: 15 Sekunden");
+        getLogger().info("Spawn aktiviert");
         getLogger().info("================================");
     }
 
