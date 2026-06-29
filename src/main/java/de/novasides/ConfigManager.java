@@ -43,4 +43,37 @@ public class ConfigManager {
     public int getMaxZ() {
         return plugin.getConfig().getInt("generation.max-z", 5000);
     }
+
+    public String getSpawnWorld() {
+        return plugin.getConfig().getString(
+                "spawn.world",
+                "world"
+        );
+    }
+
+    public double getSpawnX() {
+        return plugin.getConfig().getDouble("spawn.x", 0);
+    }
+
+    public double getSpawnY() {
+        return plugin.getConfig().getDouble("spawn.y", 100);
+    }
+
+    public double getSpawnZ() {
+        return plugin.getConfig().getDouble("spawn.z", 0);
+    }
+
+    public float getSpawnYaw() {
+        return (float) plugin.getConfig().getDouble(
+                "spawn.yaw",
+                0
+        );
+    }
+
+    public float getSpawnPitch() {
+        return (float) plugin.getConfig().getDouble(
+                "spawn.pitch",
+                0
+        );
+    }
 }
