@@ -10,6 +10,7 @@ public final class NovaSidesPlugin extends JavaPlugin {
     private ConfigManager configManager;
     private MessageManager messageManager;
     private SideManager sideManager;
+    private CombatManager combatManager;
 
     @Override
     public void onEnable() {
@@ -27,8 +28,9 @@ public final class NovaSidesPlugin extends JavaPlugin {
         configManager = new ConfigManager(this);
         messageManager = new MessageManager(this);
         sideManager = new SideManager(configManager);
+        combatManager = new CombatManager();
 
-        // Bewegung / Grenze
+        // Grenz-/Bewegungssystem
         getServer().getPluginManager().registerEvents(
                 new PlayerMoveListener(
                         sideManager,
@@ -36,14 +38,30 @@ public final class NovaSidesPlugin extends JavaPlugin {
                         messageManager,
                         new ActionBarManager(messageManager),
                         new ParticleManager(configManager),
-                        new TitleManager(messageManager)
+                        new TitleManager(messageManager),
+                        combatManager
                 ),
                 this
         );
 
-        // PvP-Regeln
+        // PvP + Projektile + CombatTag
         getServer().getPluginManager().registerEvents(
-                new PlayerDamageListener(sideManager),
+                new PlayerDamageListener(
+                        sideManager,
+                        combatManager
+                ),
+                this
+        );
+
+        // KeepInventory
+        getServer().getPluginManager().registerEvents(
+                new PlayerDeathListener(sideManager),
+                this
+        );
+
+        // TNT-Schutz
+        getServer().getPluginManager().registerEvents(
+                new ExplosionListener(sideManager),
                 this
         );
 
@@ -70,6 +88,7 @@ public final class NovaSidesPlugin extends JavaPlugin {
         getLogger().info("================================");
         getLogger().info("NovaSides aktiviert");
         getLogger().info("Border X: " + configManager.getBorderX());
+        getLogger().info("Combat Tag: 15 Sekunden");
         getLogger().info("================================");
     }
 
@@ -92,5 +111,9 @@ public final class NovaSidesPlugin extends JavaPlugin {
 
     public SideManager getSideManager() {
         return sideManager;
+    }
+
+    public CombatManager getCombatManager() {
+        return combatManager;
     }
 }
