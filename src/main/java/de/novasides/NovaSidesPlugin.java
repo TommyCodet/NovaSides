@@ -28,6 +28,7 @@ public final class NovaSidesPlugin extends JavaPlugin {
         messageManager = new MessageManager(this);
         sideManager = new SideManager(configManager);
 
+        // Bewegung / Grenze
         getServer().getPluginManager().registerEvents(
                 new PlayerMoveListener(
                         sideManager,
@@ -37,6 +38,12 @@ public final class NovaSidesPlugin extends JavaPlugin {
                         new ParticleManager(configManager),
                         new TitleManager(messageManager)
                 ),
+                this
+        );
+
+        // PvP-Regeln
+        getServer().getPluginManager().registerEvents(
+                new PlayerDamageListener(sideManager),
                 this
         );
 
